@@ -1,0 +1,229 @@
+Runlevel
+	- init 0 - halt/shutdown	- runlevel0.target - poweroff.target
+	- init 1 - single user maint. mode.
+	- init 2 - multi-user maint. mode.
+	- init 3 - fully functional CLI mode.
+	- init 4 - unused till date.
+	- init 5 - init 3 + GUI - graphical.target
+	- init 6 - reboot
+	
+file mgmt
+	- create
+		- touch 
+			- create a blank file, if it does not exists.
+			- if file exists, then it will update the time stamp.
+		- cat
+			- it helps in viewing a file's content.
+				# cat    filename.txt
+			- creates a file with some data in it.
+				# cat   >  filename.txt
+			- over-ride the file's data
+				# cat   >  filename.txt
+			- append the data in the file
+				# cat   >>  filename.txt
+			- it helps in concatenation of files into a file
+				# cat a.txt b.txt > c.txt
+				# cat a.txt b.txt >> c.txt
+		- nano
+		- gedit
+		- vi/vim
+	- modify
+	- delete
+	- copy
+	- move
+	- hide
+	- unhide
+	- rename
+	
+directory mgmt
+	- create
+		# mkdir   directoryName
+	- change
+		# cd 			//take you to the user's home directory
+		# cd ..			//takes you to the parent directory
+		# cd ~			//take you to the user's home directory
+		# cd -			//takes to you last known location
+	- delete
+		# rmdir	directoryName	//deletes only empty directories
+		# rm   -rf   directoryName	//deletes file or directories
+	
+Storage Management:
+-------------------
+	- Standard partitioning
+		- adding single disk in linux and using it.
+		- it provides FIXED disk
+	- LVM (logical Volume Manager) partitioning
+		- dynamic disk. 
+		- its size can vary.
+		- it provides DYNAMIC disk where disk size can be increased or decreased. 
+	- RAID
+		- Redundant Array of Independent Disk
+		- it requires IDENTICAL disks to work.
+		- RAID types:
+			- RAID 0 - Stripping
+			- RAID 1 - Mirroring
+			- RAID 5 - Stripping with Single Parity
+			- RAID 6 - Stripping with Dual Parity
+			- RAID 10 - Mirroring with Stripping 
+Commands:
+	- to list all attached disks
+		# lsblk
+		
+	- to list all the mounted partitions
+		# df  -h
+		# df  -hT
+		
+	- to create a partitioning
+		# fdisk  <disk_name>
+	
+	- to create file system
+		# mkfs.<fs>
+		
+	- to mount and unmount a partition
+		# mount 	//it mounts the partition  
+		# umount	//it removes/unmount the partition
+		
+File systems in Windows:
+	- NTFS (New Technology File System)
+	- FAT/FAT16 (File Allocation Table)
+	- FAT32 (File Allocation Table)
+	- ReFS (Resilient File System)
+	
+File systems in Linux:
+	- EXT
+	- EXT2
+	- EXT3
+	- EXT4
+	- XFS	(default file system)
+	- BrtFs
+	- CramFS
+	- exFAT
+	
+Steps to create a standard partition:
+	- add a disk to linux system
+	- create a partition using fdisk utility
+	- create a file system for this partition using mkfs cmd.
+	- create a mount point using mkdir command.
+	- mount the partition using mount command and verify.
+	
+to change the computer name:
+	# hostnamectl    set-hostname   server
+	# hostnamectl    set-hostname   client
+OR
+	# nmtui		//Network Manager Text User Interface
+	# nmcli		//Network Manager Command Line Interface
+	
+MBR vs GPT
+------------
+MBR
+	- 4 primary partitions
+	- 2TB HDD support only.
+	
+GPT
+	- GUID partition table
+		- GUID = Globally Unique IDentifier
+	- 128 primary partitions
+	- 18 Exabyte HDD support
+	
+to delete the standard partition:
+----------------------------------
+	- unmount the mounted partition using umount cmd
+	- delete the directory (/standard)
+	- delete the file system using fdisk utility --> d, w
+
+# lsblk
+
+Task 
+	- create a standard partition of 7GB using EXT4 file system and mount it at /std5.3
+	
+LVM
+---------------
+	- Logical Volume Manager
+	- it helps in combining multiple disks together.
+	- storage disks can be on same or different sizes.
+steps to create LVM:
+	- add the disk
+	- create partition
+	- create a physical volume (pv)
+	- create volume group (vg)
+	- create logical volume (lv)
+	- create file system
+	- create mount point
+	- mount and verify
+	
+Create new logical volumes using the following
+	- total size: 20GB
+	- 1st LV length: 9GB with EXT4 and mount it on /ltilv01
+	- 2nd LV length: 5GB with XFS  and mount it on /ltilv02
+	
+Note - DO NOT USE "rm" COMMAND ANYWHERE IN THIS TASK.
+
+
+Remove the LVM:
+---------------------
+	- unmount the mount point using umount command
+		# umount   /lvm
+	- delete the mount point (directory) --> OPTIONAL
+		# rmdir /lvm		//or
+		# rm -r /lvm
+	- remove the logical volume
+		# lvremove     vg/lv
+	- remove the volume group 
+		# vgremove   vg
+	- remove the physical volume
+		# pvremove  /dev/sdb2   /dev/sdc1
+	- delete the partition
+		# fdisk /dev/sdb --> d, w
+		# fdisk /dev/sdc --> d, w
+
+
+Task 
+--------
+	- Create a logical volume of 10GB size using XFS file system. Add another 10GB and extend the logical volume and verify it.
+		HINT - Use the command "xfs_growfs" to expand the size at the end of the scenario.
+		
+Package management:
+--------------------
+	- in windows we have SOFTWAREs
+	- in linux we have PACKAGES
+	
+ways to install a package:
+	1. Online
+		- mirror server for centos (free)
+		- Redhat Satellite Servers (paid)
+	2. Offline --> we will use.
+		- download from internet
+		- from CD/DVD
+		
+Name of a package:
+	name-version-release-architecture.extension
+		architecture
+			- 32bit			= i686
+			- 64bit			= x86_64
+			- both 32 & 64	= noarch
+		extension
+			- .rpm (Redhat Package Manager)
+			- .deb, .dpkg
+			
+Package Manager:
+--------------------
+	- its a tool that helps in:
+		- installing a package
+		- update/upgrading a package
+		- getting the information of the package
+		- removing a package
+		- update the whole OS
+		- patching the whole OS
+	- names of few package managers are:
+		- RPM (Redhat Package Manager)
+		- YUM (Yellowdog Updater Modifier)
+		- APT (Advanced Packaging Tool)
+		- DNF (DaNdiFied Package Manager)
+
+ex:
+	# yum install httpd
+	# apt install httpd
+	# dnf install httpd
+	
+RPM:
+	- 
